@@ -171,7 +171,7 @@ def delete_snapshot(path: PosixPath) -> bool:
     return True
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         "snap-sync-cleanup", description="Cleans up old remote snap-sync backups."
     )
@@ -256,3 +256,7 @@ if __name__ == "__main__":
     # Exit with error code if there were failed to delete attempts.
     if delete_attempts > delete_count:
         exit(1)
+
+
+if __name__ == "__main__":
+    main()

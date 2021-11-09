@@ -1,18 +1,21 @@
 [tool.poetry]
 name = "snap-sync-cleanup"
-version = "1.0.0"
+version = "1.0.1"
 description = "Cleans up remote backups created by snap-sync."
 authors = ["Christopher Tam <ohgodtamit@gmail.com>"]
 license = "BSD-2-Clause"
 repository = "https://github.com/GodTamIt/snap-sync-cleanup"
 
 packages = [
-    { include = "snap-sync-cleanup" }
+    { include = "snap_sync_cleanup" }
 ]
 
 [tool.poetry.dependencies]
 python = "^3.6"
 colorlog = { version = "^6.6.0", optional = true }
+
+[tool.poetry.scripts]
+snap-sync-cleanup = "snap_sync_cleanup.snap_sync_cleanup:main"
 
 [tool.poetry.dev-dependencies]
 
