@@ -59,20 +59,21 @@ def set_up_logging(log_level, use_color: bool):
 
 
 def log_external_output(
-    stdout: Union[str, bytes], stderr: Union[str, bytes], log_level=logging.DEBUG
+    stdout: Union[str, bytes, None],
+    stderr: Union[str, bytes, None],
+    log_level=logging.DEBUG,
 ):
     if isinstance(stdout, bytes):
         stdout = stdout.decode("utf-8")
     if isinstance(stderr, bytes):
         stderr = stderr.decode("utf-8")
 
-    stdout = stdout.strip()
-    stderr = stderr.strip()
-
     if stderr:
+        stderr = stderr.strip()
         logger.log(log_level, stderr)
 
     if stdout:
+        stdout = stdout.strip()
         logger.log(log_level, stdout)
 
 
@@ -153,8 +154,11 @@ def get_snapshots(path: PosixPath) -> List[Tuple[int, PosixPath]]:
 def delete_snapshot(path: PosixPath) -> bool:
     assert path.is_absolute()
 
-    subvolume_path = path.joinpath("subvolume").absolute()
-    delete_result = subprocess.run(["btrfs subvolume delete", subvolume_path])
+    subvolume_path = path.joinpath("snapshot").absolute()
+    delete_result = subprocess.run(
+        ["btrfs", "subvolume", "delete", str(subvolume_path)],
+        capture_output=True,
+    )
 
     if delete_result.returncode != 0:
         logger.error(f"Failed to delete subvolume '{subvolume_path}'")
@@ -243,7 +247,7 @@ def main():
             continue
 
         # If code has reached here, the snapshot is delete-eligible.
-        delete_attempts = 0
+        delete_attempts += 1
 
         if delete_snapshot(path):
             logger.info(f"Successfully deleted snapshot {num}")
